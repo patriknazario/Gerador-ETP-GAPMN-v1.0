@@ -41,23 +41,30 @@ const MarkdownRenderer: React.FC<{ text: string; className?: string }> = ({ text
     while (i < lines.length) {
         const line = lines[i];
 
-        // CORREÇÃO: Remove o título redundante específico do Item 8 usando uma expressão regular mais robusta.
-        if (/^#+\s*(item\s)?8\s?[.–]?\s*estimativa do valor da contratação/i.test(line.trim())) {
+        // CORREÇÃO GENERALIZADA 1: Remove títulos duplicados de QUALQUER item (ex: "### Item 7...").
+        // A expressão regular busca por hashtags, a palavra "item" (opcional), um ou mais dígitos,
+        // um separador opcional (ponto, traço) e então para.
+        if (/^#+\s*(item\s)?\d+\s?[.–]?\s*/i.test(line.trim())) {
             i++;
             continue;
         }
 
+        // CORREÇÃO GENERALIZADA 2: Trata subtítulos de "ETAPA" que podem vir com '###' ou '**'.
+        // Remove a formatação markdown original e aplica a classe de subtítulo correta.
+        const etapaMatch = line.trim().match(/^(?:#+\s*|\*\*)(ETAPA\s\d+.*)/i);
+        if (etapaMatch) {
+            const cleanContent = etapaMatch[1]; // Pega apenas o conteúdo (ex: "ETAPA 1: ...")
+            // Envolvemos em ** para que o renderWithBold aplique o negrito corretamente ao título inteiro.
+            elements.push(<h4 key={i} className="text-lg font-bold mt-5 mb-2 text-slate-700">{renderWithBold(`**${cleanContent}**`, `h4-${i}`)}</h4>);
+            i++;
+            continue;
+        }
+        
         // Headings (e.g., ## Title)
         if (line.startsWith('## ')) {
             elements.push(<h3 key={i} className="text-xl font-bold mt-6 mb-3 text-slate-800">{renderWithBold(line.substring(3), `h3-${i}`)}</h3>);
             i++;
             continue;
-        }
-        // Sub-headings (specific case for item 8 prompt, e.g., **ETAPA 1...**)
-        if (line.startsWith('**ETAPA')) {
-             elements.push(<h4 key={i} className="text-lg font-bold mt-5 mb-2 text-slate-700">{renderWithBold(line, `h4-${i}`)}</h4>);
-             i++;
-             continue;
         }
         
         // Tables (detects header and separator lines)
