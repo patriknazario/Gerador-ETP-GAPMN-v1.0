@@ -31,7 +31,7 @@ export default async function handler(
   try {
     // 3. Chama a API do Gemini de forma segura a partir do backend
     const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash-latest', // Modelo consistente com o resto da aplicação
+      model: 'gemini-1.5-flash-001', // Modelo consistente com o resto da aplicação
       contents: prompt,
     });
     
