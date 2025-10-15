@@ -1,0 +1,5 @@
+{
+  "name": "Gerador ETP - GAP Manaus - v1.0b",
+  "description": "Uma aplicação inteligente para gerar documentos de Estudo Técnico Preliminar (ETP) para processos de licitação, seguindo a Lei 14.133/2021. O usuário fornece informações básicas e a IA gera o conteúdo técnico-jurídico para cada seção do documento, que pode ser revisado e editado interativamente.",
+  "requestFramePermissions": []
+}
